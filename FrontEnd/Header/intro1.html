@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AquaGuard - Smart Home Water Management</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+          url("https://source.unsplash.com/1600x900/?water") no-repeat center
+            center fixed;
+        background-size: cover;
+        color: white;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      .logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: white;
+      }
+      .navbar li {
+        list-style: none;
+        margin-left: 20px;
+      }
+      .navbar a {
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+        transition: color 0.3s ease;
+      }
+      .navbar a:hover {
+        color: #ff0000; /* Red */
+      }
+
+      /* Header Styles */
+      header {
+        padding: 20px 0;
+        background: rgba(0, 119, 182, 0.3);
+        backdrop-filter: blur(10px);
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #00b4d8;
+      }
+
+      /* Hero Section */
+      .hero {
+        height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 0 20px;
+      }
+
+      .hero-content h1 {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        color: #00b4d8;
+      }
+
+      .hero-content p {
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+        max-width: 800px;
+        margin: 0 auto 30px;
+      }
+
+      /* Features Section */
+      .features {
+        padding: 50px 0;
+        background: rgba(0, 0, 0, 0.8);
+      }
+
+      .features h2 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 40px;
+        color: #00b4d8;
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        padding: 20px;
+      }
+
+      .feature-card {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 30px;
+        border-radius: 10px;
+        backdrop-filter: blur(5px);
+        transition: transform 0.3s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .feature-card h3 {
+        color: #00b4d8;
+        margin-bottom: 15px;
+        font-size: 1.5rem;
+      }
+
+      /* Button Styles */
+      .cta-button {
+        display: inline-block;
+        padding: 15px 30px;
+        background: #00b4d8;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background 0.3s ease;
+        margin-top: 20px;
+      }
+
+      .cta-button:hover {
+        background: #0077b6;
+      }
+
+      /* Login Section */
+      .login-section {
+        text-align: center;
+        padding: 50px 0;
+        background: rgba(0, 0, 0, 0.6);
+      }
+
+      @media (max-width: 768px) {
+        .hero-content h1 {
+          font-size: 2.5rem;
+        }
+
+        .feature-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container navbar">
+        <div class="logo">AquaGuard</div>
+        <li><a href="main.html">home</a></li>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Smart Home Water Management</h1>
+        <p>
+          Monitor, analyze, and optimize your household water usage with our
+          advanced IoT-based solution. Get real-time insights and save water
+          while protecting your home from potential leaks.
+        </p>
+        <a href="#features" class="cta-button">Explore Features</a>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <div class="container">
+        <h2>Our Features</h2>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h3>Real-Time Monitoring</h3>
+            <p>
+              Track water flow, pressure, and temperature in real-time. Get
+              instant updates about your home's water usage patterns and system
+              status.
+            </p>
+          </div>
+          <div class="feature-card">
+            <h3>Smart Leak Detection</h3>
+            <p>
+              Advanced algorithms detect unusual patterns and potential leaks
+              early, helping prevent water damage and waste in your home.
+            </p>
+          </div>
+          <div class="feature-card">
+            <h3>Usage Analytics</h3>
+            <p>
+              Detailed insights into your water consumption patterns, helping
+              you understand and optimize your household water usage.
+            </p>
+          </div>
+          <div class="feature-card">
+            <h3>Intelligent Recommendations</h3>
+            <p>
+              Receive personalized tips and recommendations to reduce water
+              consumption and maintain your water system efficiently.
+            </p>
+          </div>
+          <div class="feature-card">
+            <h3>Custom Alerts</h3>
+            <p>
+              Set up personalized alerts for unusual usage patterns, potential
+              leaks, or maintenance requirements.
+            </p>
+          </div>
+          <div class="feature-card">
+            <h3>Interactive Dashboard</h3>
+            <p>
+              User-friendly interface with visual representations of your water
+              usage data and system status.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

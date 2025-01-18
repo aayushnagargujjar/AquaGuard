@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign in page</title>
+
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="login.css" />
+  </head>
+  <body>
+    <div class="stars"></div>
+
+    <main class="login-container">
+      <div class="Login">
+        <form action="#" method="post">
+          <h2>Login</h2>
+          <div class="input-box">
+            <span class="icon">
+              <i class='bx bx-user'></i>
+            </span>
+            <input
+              type="text"
+              name="username"
+              required
+              placeholder="Enter your username"
+            />
+            <label for="username">Username</label>
+          </div>
+
+          <div class="input-box">
+            <span class="icon">
+              <i class="bx bxl-gmail"></i>
+            </span>
+            <input
+              type="email"
+              name="email"
+              required
+              placeholder="Enter your email"
+            />
+            <label for="email">Email</label>
+          </div>
+
+          <button type="submit">Login</button>
+
+          <!-- <div class="forgot-password">
+            <a href="forgot.html">Forgot Password?</a>
+          </div> -->
+
+          <div class="register-link">
+            <p>
+              New here? Create an account
+              <a href="SignUp.html">SignUp</a>
+            </p>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

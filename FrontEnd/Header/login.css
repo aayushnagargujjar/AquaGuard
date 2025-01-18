@@ -1,0 +1,260 @@
+:root {
+    /* Primary Color Palette */
+    --primary-color: #003366;  /* Dark Blue */
+    --accent-color: #ff0000;   /* Red */
+    --background-dark: #000000; /* Black */
+    --text-light: white;
+  
+    /* Form Colors */
+    --form-border-color: #003366;  /* Dark Blue */
+    --form-text-color: #003366;    /* Dark Blue */
+    --input-background: transparent;
+  
+    /* Star Animation Color */
+    --star-color: #c8d6e5;  /* Light Blue */
+  
+    /* Placeholder Text Colors */
+    --placeholder-color: #003366;  /* Dark Blue */
+  
+    /* Hover and Interactive Colors */
+    --hover-link-color: #ff0000;  /* Red */
+    --button-hover-color: #003366;  /* Dark Blue */
+    --button-text-color: white;
+  
+    /* Additional Accent Colors */
+    --register-link-color: #ff0000;  /* Red */
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+      "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+      /* background-color: #5AB2FF; */
+  }
+  
+  /* Body background and overall styling */
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden; /* Prevent scrollbars from appearing due to falling stars */
+  }
+  
+  /* Login container with background image */
+  .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    background: url("water.jpg") no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: relative; /* For stars to be positioned absolutely */
+  }
+  
+  /* Falling stars or snowflakes */
+  .stars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Prevent interaction with stars */
+    z-index: 1;
+  }
+  
+  .star {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: var(--star-color);
+    border-radius: 50%;
+    opacity: 0.7;
+    animation: fall 5s infinite linear, twinkle 1.5s infinite alternate;
+  }
+  
+  @keyframes fall {
+    0% {
+      top: -10px;
+      left: calc(100% * var(--random-x));
+    }
+    100% {
+      top: 100vh;
+      left: calc(100% * var(--random-x));
+    }
+  }
+  
+  @keyframes twinkle {
+    0% {
+      opacity: 0.7;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.7;
+    }
+  }
+  
+  /* The rest of your styles */
+  .Login {
+    position: relative;
+    width: 400px;
+    height: 450px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--form-border-color);
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(25px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    z-index: 2; /* Ensure the login form is above the stars */
+  }
+  
+  h2 {
+    font-size: 3em;
+    color: var(--form-text-color);
+    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+      "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .input-box {
+    position: relative;
+    width: 310px;
+    margin: 30px 0;
+    border-bottom: 2px solid var(--form-border-color);
+  }
+  
+  .input-box input {
+    width: 100%;
+    height: 50px;
+    background: var(--input-background);
+    border: none;
+    outline: none;
+    font-size: 1em;
+    color: var(--form-text-color);
+    padding: 15px 35px 0 5px;
+  }
+  
+  .input-box label {
+    position: absolute;
+    top: 0;
+    left: 5px;
+    transform: translateY(50%);
+    font-size: 100%;
+    color: var(--form-text-color);
+    pointer-events: none;
+    transition: 0.5s;
+    opacity: 0.7;
+    font-weight: bold;
+  }
+  
+  .input-box input:focus ~ label,
+  .input-box input:valid ~ label {
+    top: -10px;
+    font-size: 0.8em;
+    opacity: 1;
+  }
+  
+  .input-box .icon {
+    position: absolute;
+    right: 8px;
+    top: 15px;
+    color: var(--form-text-color);
+    font-size: 1.2em;
+  }
+  
+  .remember-forgot {
+    margin: -15px 0 15px;
+    font-size: 0.9em;
+    color: var(--form-text-color);
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .remember-forgot label input {
+    margin-right: 3px;
+  }
+  
+  .remember-forgot a {
+    color: var(--form-text-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .remember-forgot a:hover {
+    text-decoration: underline;
+    font-size: 120%;
+    color: var(--hover-link-color);
+  }
+  
+  button {
+    width: 100%;
+    height: 40px;
+    background: var(--background-dark);
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 1em;
+    color: var(--button-text-color);
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  button:hover {
+    background-color: var(--button-hover-color);
+    color: #f8ede3;
+    font-size: 130%;
+    transform: scale(1.02);
+  }
+  
+  button:active {
+    transform: scale(0.98);
+  }
+  
+  .register-link {
+    font-size: 0.9em;
+    color: var(--form-text-color);
+    text-align: center;
+    margin: 25px 0 10px;
+  }
+  
+  .register-link p a {
+    color: var(--form-text-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+  
+  .register-link p a:hover {
+    text-decoration: underline;
+    /* color: var(--hover-link-color); */
+    color: #ff2929;
+    font-size: 120%;
+  }
+  
+  @media (max-width: 400px) {
+    .Login {
+      width: 100%;
+      height: 100vh;
+      border: none;
+      border-radius: 0;
+    }
+  
+    .input-box {
+      width: 290px;
+    }
+  }
+  
+  input[type="password"]::placeholder,
+  input[type="email"]::placeholder {
+    color: var(--placeholder-color);
+    opacity: 0.7;
+  }

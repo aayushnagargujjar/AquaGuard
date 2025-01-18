@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Monitoring - AquaGuard</title>
+    <link rel="stylesheet" href="motor.css">
+    <link rel="stylesheet" href="../Body/home.css">
+    <!-- <link rel="stylesheet" href="monitoring.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body>
+    <!-- Fixed Header/Navigation (same as main page) -->
+    <header class="fixed-header">
+        <div class="logo">
+            <i class="fas fa-water"></i> AquaGuard
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../Body/main.html"><i class="fas fa-home"></i> Home</a></li>
+                
+                <li><a href="#login" class="login-btn"><i class="fas fa-user"></i> Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Monitoring Dashboard -->
+    <div class="dashboard-container">
+        <h1>Real-time System Monitoring</h1>
+        
+        <!-- Tank Status -->
+        <div class="monitoring-grid">
+            <div class="tank-status">
+                <h2>Water Tank Status</h2>
+                <div class="tank-visual">
+                    <div class="water-level" id="waterLevel"></div>
+                    <div class="tank-markings">
+                        <span>100%</span>
+                        <span>75%</span>
+                        <span>50%</span>
+                        <span>25%</span>
+                        <span>0%</span>
+                    </div>
+                </div>
+                <div class="tank-info">
+                    <p>Current Level: <span id="currentLevel">75%</span></p>
+                    <p>Capacity: <span id="tankCapacity">1000</span> Liters</p>
+                </div>
+            </div>
+
+            <!-- Motor Analysis -->
+            <div class="motor-analysis">
+                <h2>Motor Analysis</h2>
+                <div class="motor-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <h3>Motor Speed</h3>
+                        <p><span id="motorSpeed">1500</span> RPM</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-bolt"></i>
+                        <h3>Power Usage</h3>
+                        <p><span id="powerUsage">2.5</span> kW</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <h3>Runtime</h3>
+                        <p><span id="runtime">4.5</span> hours</p>
+                    </div>
+                </div>
+                <div class="motor-control">
+                    <h3>Motor Control</h3>
+                    <div class="control-panel">
+                        <label class="switch">
+                            <input type="checkbox" id="motorToggle">
+                            <span class="slider round"></span>
+                        </label>
+                        <span id="motorStatus">OFF</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="monitoring.js"></script>
+</body>
+</html>

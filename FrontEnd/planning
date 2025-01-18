@@ -1,0 +1,24 @@
+write the codes for home page
+
+in home page we will be having "home, Details, Login"
+
+-> at bottom add a navigation bar to login or signin (if logged in then provide the details)
+
+-> add a search bar
+
+-> in the login page store the email address of the user in order to send the alert messages in urgent situations 
+
+
+
+________________Home page_____________
+Ih header section i need Home, details, login buttons
+and  add the background image to the home page and also i need a portion of page to add details
+and make a flex box (where it should be present there like always on top )
+make portions to add graphs and other details
+
+
+________Ok now__________
+Here i will divide my folders into 
+->header section
+->Body section
+->
