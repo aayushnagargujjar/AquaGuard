@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pipe Analysis</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+        padding: 20px;
+      }
+      h1 {
+        text-align: center;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .graph-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+      }
+      .graph-card {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      .graph-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+      }
+      .stat-card {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      .value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #0077b6;
+      }
+      canvas {
+        width: 100% !important;
+        height: 200px !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Domestic Usage Data</h1>
+
+      <!-- Summary Statistics -->
+      <div class="stats">
+        <div class="stat-card">
+          <h3>Average Flow Rate</h3>
+          <div class="value" id="avgFlow">0 L/min</div>
+        </div>
+        <div class="stat-card">
+          <h3>Average Pressure</h3>
+          <div class="value" id="avgPressure">0 PSI</div>
+        </div>
+        <div class="stat-card">
+          <h3>Efficiency Rate</h3>
+          <div class="value" id="efficiency">0%</div>
+        </div>
+      </div>
+
+      <!-- Graphs -->
+      <div class="graph-container">
+        <div class="graph-card">
+          <div class="graph-header">
+            <h3>Flow Rate</h3>
+            <span id="currentFlow">0 L/min</span>
+          </div>
+          <canvas id="flowRateChart"></canvas>
+        </div>
+
+        <div class="graph-card">
+          <div class="graph-header">
+            <h3>Pressure</h3>
+            <span id="currentPressure">0 PSI</span>
+          </div>
+          <canvas id="pressureChart"></canvas>
+        </div>
+
+        <div class="graph-card">
+          <div class="graph-header">
+            <h3>Temperature</h3>
+            <span id="currentTemp">0°C</span>
+          </div>
+          <canvas id="tempChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script>
+      // Configuration
+      const config = {
+        maxPoints: 50,
+        updateInterval: 1000,
+      };
+
+      // Data arrays
+      let flowData = [];
+      let pressureData = [];
+      let tempData = [];
+      let labels = [];
+
+      // Initialize charts
+      const charts = {
+        flow: createChart("flowRateChart", "Flow Rate", "#0077b6"),
+        pressure: createChart("pressureChart", "Pressure", "#00b4d8"),
+        temp: createChart("tempChart", "Temperature", "#ef476f"),
+      };
+
+      function createChart(id, label, color) {
+        return new Chart(document.getElementById(id), {
+          type: "line",
+          data: {
+            labels: [],
+            datasets: [
+              {
+                label: label,
+                data: [],
+                borderColor: color,
+                tension: 0.4,
+                fill: false,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: false },
+              x: { display: false },
+            },
+            animation: false,
+          },
+        });
+      }
+
+      function updateCharts() {
+        const flow = 25 + Math.random() * 5;
+        const pressure = 45 + Math.random() * 10;
+        const temp = 22 + Math.random() * 3;
+        const time = new Date().toLocaleTimeString();
+
+        // Update data arrays
+        flowData.push(flow);
+        pressureData.push(pressure);
+        tempData.push(temp);
+        labels.push(time);
+
+        if (flowData.length > config.maxPoints) {
+          flowData.shift();
+          pressureData.shift();
+          tempData.shift();
+          labels.shift();
+        }
+
+        // Update charts
+        charts.flow.data.labels = labels;
+        charts.flow.data.datasets[0].data = flowData;
+        charts.pressure.data.labels = labels;
+        charts.pressure.data.datasets[0].data = pressureData;
+        charts.temp.data.labels = labels;
+        charts.temp.data.datasets[0].data = tempData;
+
+        // Update current values
+        document.getElementById("currentFlow").textContent = `${flow.toFixed(
+          1
+        )} L/min`;
+        document.getElementById(
+          "currentPressure"
+        ).textContent = `${pressure.toFixed(1)} PSI`;
+        document.getElementById("currentTemp").textContent = `${temp.toFixed(
+          1
+        )}°C`;
+
+        // Update averages
+        document.getElementById("avgFlow").textContent = `${average(
+          flowData
+        ).toFixed(1)} L/min`;
+        document.getElementById("avgPressure").textContent = `${average(
+          pressureData
+        ).toFixed(1)} PSI`;
+        document.getElementById("efficiency").textContent = `${(
+          Math.random() * 5 +
+          93
+        ).toFixed(1)}%`;
+
+        // Update charts
+        Object.values(charts).forEach((chart) => chart.update("none"));
+
+        // Save to JSON
+        saveToJSON();
+      }
+
+      function average(arr) {
+        return arr.reduce((a, b) => a + b, 0) / arr.length;
+      }
+
+      function saveToJSON() {
+        const data = {
+          timestamp: new Date().toISOString(),
+          flowRate: flowData[flowData.length - 1],
+          pressure: pressureData[pressureData.length - 1],
+          temperature: tempData[tempData.length - 1],
+          averages: {
+            flow: average(flowData),
+            pressure: average(pressureData),
+            temperature: average(tempData),
+          },
+        };
+
+        // In production, implement API call to save data
+        console.log("Saving data:", data);
+      }
+
+      // Start updates
+      setInterval(updateCharts, config.updateInterval);
+    </script>
+  </body>
+</html>

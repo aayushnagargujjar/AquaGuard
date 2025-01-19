@@ -1,0 +1,41 @@
+{
+    "systemStatus": {
+      "status": "Online",
+      "lastUpdate": "12:00:00 PM",
+      "motorStatus": "OFF"
+    },
+    "measurements": [
+      {
+        "timestamp": "11:59:00 PM",
+        "flowRate": {
+          "value": 25.3,
+          "unit": "L/min",
+          "min": 20,
+          "max": 30
+        },
+        "pressure": {
+          "value": 45.6,
+          "unit": "PSI",
+          "min": 40,
+          "max": 60
+        },
+        "temperature": {
+          "value": 24.8,
+          "unit": "°C",
+          "min": 20,
+          "max": 30
+        }
+      }
+    ],
+    "graphConfigs": {
+      "maxDataPoints": 100,
+      "updateInterval": 1000,
+      "anomalyCheckInterval": 2000,
+      "anomalyThresholds": {
+        "flowRate": 28,
+        "pressure": 55,
+        "temperature": 28,
+        "trendThreshold": 0.5
+      }
+    }
+  }

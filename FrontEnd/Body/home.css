@@ -312,6 +312,7 @@ input:checked + .slider:before {
   }
 
   .hero h1 {
+    justify-content: center;
     font-size: 2rem;
   }
 
@@ -336,7 +337,7 @@ input:checked + .slider:before {
 h2 {
   font-size: 2rem;
   color: #333;
-  margin-left: 40rem;
+  margin-bottom: 1rem;
   text-align: center;
 }
 
@@ -350,4 +351,14 @@ h3 {
 #motorStatus {
   font-weight: bold;
   min-width: 40px;
+}
+
+.YDK{
+  margin-left: 40rem;
+}
+
+#down{
+  border-radius: 2rem;
+  width: 70%;
+  margin-left: 15%;
 }
