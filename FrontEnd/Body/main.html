@@ -5,48 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AquaGuard - Smart Water Management</title>
     <link rel="stylesheet" href="home.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
   </head>
   <body>
     <!-- Fixed Header/Navigation -->
     <header class="fixed-header">
-      <div class="logo">
-        <i class="fas fa-water"></i> AquaGuard
-      </div>
+      <div class="logo"><i class="fas fa-water"></i> AquaGuard</div>
       <nav>
         <ul>
-          <li><a href="#home" class="active"><i class="fas fa-home"></i> Home</a></li>
-          <li><a href="intro1.html"><i class="fas fa-info-circle"></i> Details</a></li>
+          <li>
+            <a href="#home" class="active"><i class="fas fa-home"></i> Home</a>
+          </li>
+          <li>
+            <a href="#details"><i class="fas fa-info-circle"></i> Details</a>
+          </li>
           <li class="dropdown">
-            <a href="#" class="dropbtn"><i class="fas fa-chart-line"></i> Analysis <i class="fas fa-caret-down"></i></a>
+            <a href="#" class="dropbtn"
+              ><i class="fas fa-chart-line"></i> Analysis
+              <i class="fas fa-caret-down"></i
+            ></a>
             <div class="dropdown-content">
-              <a href="#optionA">Option A</a>
-              <a href="#optionB">Option B</a>
-              <a href="#optionC">Option C</a>
+              <a href="#water-flow">pipe A</a>
+              <a href="#pressure">pipe B</a>
+              <a href="#temperature">pipe C</a>
             </div>
           </li>
-          <li><a href="#Manual"><i class="fas fa-book"></i> Manual</a></li>
-          <li><a href="#login" class="login-btn"><i class="fas fa-user"></i> Profile</a></li>
+          <li>
+            <a href="#manual"><i class="fas fa-book"></i> Manual</a>
+          </li>
+          <li>
+            <a href="#login" class="login-btn"
+              ><i class="fas fa-user"></i> Profile</a
+            >
+          </li>
         </ul>
       </nav>
     </header>
 
-    <!-- Hero Section with Background Image -->
+    <!-- Hero Section -->
     <section class="hero">
       <div class="hero-content">
         <h1>Smart Water Management System</h1>
-        <p>Monitor, analyze, and optimize your water usage with IoT technology</p>
+        <p>
+          Monitor, analyze, and optimize your water usage with IoT technology
+        </p>
         <button class="cta-button">Get Started</button>
       </div>
     </section>
 
     <!-- Details Section -->
-    <section class="details-section">
+    <section class="details-section" id="details">
       <h2>System Overview</h2>
       <div class="info-grid">
-        <div class="info-card" onclick="window.location.href='monitoring.html'">
+        <div class="info-card">
           <i class="fas fa-tachometer-alt icon"></i>
-          <a href="motor.html"><h3>Real-time Monitoring</h3></a>
+          <h3>Real-time Monitoring</h3>
           <p>Track water flow, pressure, and temperature data instantly</p>
         </div>
         <div class="info-card">
@@ -62,48 +78,53 @@
       </div>
     </section>
 
-    <!-- Graphs Section with Motor Control -->
-    <section class="graphs-section">
+    <!-- Graphs Section -->
+    <section class="graphs-section" id="analysis">
       <div class="section-header">
-        <h2>System Analytics</h2>
+        <h2>Live System Analytics</h2>
         <div class="motor-control">
           <span>Motor Status:</span>
           <label class="switch">
-            <input type="checkbox" id="motorToggle">
+            <input type="checkbox" id="motorToggle" />
             <span class="slider round"></span>
           </label>
-          <option value="off">
-            <span id="motorStatus">OFF</span>
-          </option>
-          <option value="On">
-            <span id="motorStatus">ON</span>
-          </option>
+          <span id="motorStatus">OFF</span>
         </div>
       </div>
       <div class="graphs-container">
-        <div class="graph-card">
+        <div class="graph-card" id="water-flow">
           <h3><i class="fas fa-water"></i> Water Flow Rate</h3>
-          <div class="graph" id="flowGraph"></div>
+          <div class="graph">
+            <canvas id="flowGraph"></canvas>
+          </div>
         </div>
-        <div class="graph-card">
+        <div class="graph-card" id="pressure">
           <h3><i class="fas fa-compress-arrows-alt"></i> Pressure Levels</h3>
-          <div class="graph" id="pressureGraph"></div>
+          <div class="graph">
+            <canvas id="pressureGraph"></canvas>
+          </div>
         </div>
-        <div class="graph-card">
+        <div class="graph-card" id="temperature">
           <h3><i class="fas fa-temperature-high"></i> Temperature Trends</h3>
-          <div class="graph" id="temperatureGraph"></div>
+          <div class="graph">
+            <canvas id="temperatureGraph"></canvas>
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- Bottom Status Bar -->
     <div class="bottom-bar">
       <div class="status-indicator">
         <span class="status-dot"></span>
         System Status: Online
       </div>
-      <div class="last-update">Last Updated: <span id="lastUpdate">Just Now</span></div>
+      <div class="last-update">
+        Last Updated: <span id="lastUpdate">Just Now</span>
+      </div>
     </div>
 
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <script src="script.js"></script>
   </body>
