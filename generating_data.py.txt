@@ -1,0 +1,280 @@
+import random
+import time
+from datetime import datetime, timedelta
+import json
+import os
+import logging
+
+# Set up logging with detailed information
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s - %(message)s')
+
+
+# Constants for realistic pressure drop detection
+NORMAL_PRESSURE = 0.4e6  # 0.4 MPa (400,000 Pascals) - typical operating pressure in a water system
+LEAK_PRESSURE_DROP_RATE = 0.05  # 5% drop in pressure can indicate a leak
+PIPE_VOLUME = 100  # Simulated volume of the water pipe in cubic meters (for demonstration)
+TIME_TO_DETECT_LEAK = 5  # Time in minutes for a sustained pressure drop to detect a leak
+LEAK_DETECTION_PROBABILITY = 0.05  # 5% chance that a pressure drop will be considered a leak
+
+# File to store the sensor data
+DATA_FILE = 'sensor_data.json'
+
+# Motor class to track motor status and control flow rate
+class Motor:
+    def __init__(self, motor_status="on"):
+        self.motor_status = motor_status
+
+    def set_motor_status(self, status):
+        """Set the motor status to 'on' or 'off'."""
+        self.motor_status = status
+
+    def get_motor_status(self):
+        """Return the current motor status."""
+        return self.motor_status
+
+    def control_flow_rate(self, max_flow_rate):
+        """Controls the flow rate based on motor status."""
+        if self.motor_status == "on":
+            return random.uniform(0.9 * max_flow_rate, max_flow_rate)  # Control the randomness when motor is on
+        else:
+            return 0  # No flow when the motor is off
+
+# Reservoir class for simulating the water reservoir
+class Reservoir:
+    def __init__(self, pipe_id, capacity, input_pipe_rate_range, is_input_pipe=False):
+        self.pipe_id = pipe_id  # Pipe identifier (for multiple pipes)
+        self.capacity = capacity  # Maximum capacity of the reservoir in cubic meters
+        self.current_level = capacity / 2  # Start with the reservoir half full
+        self.input_pipe_rate_range = input_pipe_rate_range  # Tuple for input pipe flow rate range
+        self.is_input_pipe = is_input_pipe  # Flag to identify input pipes
+    
+    def generate_input_pipe_rate(self, motor):
+        """Generates a controlled inflow rate for the input pipe.""" 
+        if self.is_input_pipe:
+            return motor.control_flow_rate(self.input_pipe_rate_range[1])  # Max flow rate for input pipe
+        return random.uniform(self.input_pipe_rate_range[0], self.input_pipe_rate_range[1])
+
+    def update_reservoir_level(self, input_pipe_inflow, is_input_pipe=False):
+        """Updates the reservoir level based on inflow rate (can be an input or output)."""
+        if is_input_pipe:
+            self.current_level += input_pipe_inflow  # Increase level for input pipe
+        else:
+            self.current_level -= input_pipe_inflow  # Decrease level for output pipes
+        
+        # Ensure that the reservoir level is within the range of 0 to capacity
+        if self.current_level > self.capacity:
+            self.current_level = self.capacity
+        elif self.current_level < 0:
+            self.current_level = 0
+
+# Function to simulate water flow (liters per minute)
+def simulate_water_flow(hour):
+    """Water consumption typically peaks during the morning and evening hours, and drops at night."""
+    base_flow = random.uniform(50.0, 150.0)  # Normal range for water flow
+    # Simulating peak usage around 8 AM and 6 PM
+    if 7 <= hour < 9 or 17 <= hour < 19:
+        base_flow *= 1.2  # Slight peak flow during these hours
+    elif 22 <= hour < 24 or 0 <= hour < 6:
+        base_flow *= 0.6  # Lower flow at night
+    return base_flow
+
+# Function to simulate pressure (in pascals)
+def simulate_pressure(hour):
+    """Pressure fluctuates slightly around a normal range depending on time of day."""
+    if 6 <= hour < 18:  # Daytime pressure is stable
+        return random.uniform(0.38e6, 0.42e6)  # Pressure between 0.38 MPa and 0.42 MPa
+    else:  # Nighttime pressure may have small drops
+        return random.uniform(0.35e6, 0.40e6)  # Pressure between 0.35 MPa and 0.40 MPa
+
+# Function to simulate temperature (Celsius)
+def simulate_temperature(hour):
+    """Temperature fluctuations during the day (higher during the day, cooler at night)."""
+    if 6 <= hour < 18:
+        return random.uniform(18.0, 25.0)  # Warmer during the day
+    else:
+        return random.uniform(10.0, 18.0)  # Cooler during the night
+
+# Function to calculate the pressure drop based on system characteristics
+def calculate_pressure_drop(previous_pressure, current_pressure):
+    return (previous_pressure - current_pressure) / previous_pressure
+
+# Function to detect leaks based on sustained pressure drop
+def detect_leak(previous_pressure, current_pressure, leak_drop_rate=LEAK_PRESSURE_DROP_RATE):
+    # Calculate pressure drop
+    pressure_drop = calculate_pressure_drop(previous_pressure, current_pressure)
+    
+    # Simulate a probability-based leak detection
+    if pressure_drop >= leak_drop_rate and random.random() < LEAK_DETECTION_PROBABILITY:
+        return True
+    return False
+
+# Function to load existing sensor data from JSON file
+def load_sensor_data():
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, 'r') as file:
+            content = file.read()
+            if content:  # Check if the file is not empty
+                return json.loads(content)
+            else:
+                return {"pipes": {}, "time_to_fill": None}  # Return empty structure if the file is empty
+    return {"pipes": {}, "time_to_fill": None}  # Return empty structure if the file doesn't exist
+
+# Function to save sensor data to the JSON file with correct formatting
+def save_sensor_data(data):
+    with open(DATA_FILE, 'w') as file:
+        json.dump(data, file, indent=4)
+
+# Function to trim data to only the latest 24 hours (1440 minutes)
+def trim_old_data(sensor_data):
+    current_time = datetime.now()
+    new_data = {}
+    for pipe_id, pipe_data in sensor_data['pipes'].items():
+        new_data[pipe_id] = []
+        for entry in pipe_data:
+            timestamp = datetime.strptime(entry['timestamp'], '%Y-%m-%d %H:%M:%S')
+            if (current_time - timestamp).total_seconds() <= 86400:  # 24 hours = 86400 seconds
+                new_data[pipe_id].append(entry)
+    return {"pipes": new_data, "time_to_fill": sensor_data.get("time_to_fill", None)}
+
+# Function to generate and display simulated data at regular intervals for multiple pipes
+def generate_sensor_data_with_logging():
+
+    pressure_readings = {1: [], 2: [], 3: [], "input": []}  # Store previous pressure readings for each pipe
+    leak_detected = {1: False, 2: False, 3: False, "input": False}  # Leak status for each pipe
+    leak_time = {1: None, 2: None, 3: None, "input": None}  # Leak detection time for each pipe
+    leak_duration = {1: 0, 2: 0, 3: 0, "input": 0}  # Leak duration for each pipe
+
+    # Load existing sensor data from the file and log the action
+    logging.info("Loading existing sensor data from the file.")
+
+    sensor_data = load_sensor_data()
+
+    # Trim old data to keep only the latest 24 hours of data
+    sensor_data = trim_old_data(sensor_data)
+
+    # Create instances of the reservoir for each pipe
+    pipe_configs = {
+        1: (10000, (50, 500)),
+        2: (12000, (60, 600)),
+        3: (15000, (70, 700)),
+        "input": (5000, (100, 1000))  # Input pipe configuration
+    }
+    
+    reservoirs = {pipe_id: Reservoir(pipe_id, *config, is_input_pipe=(pipe_id == "input")) for pipe_id, config in pipe_configs.items()}
+    
+    # Ask user for motor status input
+    motor_status_input = input("Enter motor status ('on' or 'off'): ").strip().lower()
+    if motor_status_input not in ['on', 'off']:
+        logging.warning("Invalid input. Defaulting to 'on'.")
+        motor_status_input = "on"
+    
+    # Initialize motor with user-defined status
+    motor = Motor(motor_status_input)
+
+    # Track first flow rate after the motor is turned on
+    first_flow_rate = None
+    time_to_fill = None
+
+    # Set the end time for the 24-hour simulation
+    end_time = datetime.now() + timedelta(hours=24)
+
+    while datetime.now() < end_time:
+        if motor.get_motor_status() == "off":
+            logging.info("Motor is off. Stopping data generation.")
+            break  # Exit the loop if motor is off
+        
+        for pipe_id in reservoirs:
+            # Get current hour for realistic simulation of flow, pressure, and temperature
+            current_hour = datetime.now().hour
+            
+            # Simulate new sensor readings for each pipe and log the readings
+            logging.info("Simulating new sensor readings for each pipe.")
+
+            water_flow = simulate_water_flow(current_hour)
+            pressure = simulate_pressure(current_hour)
+            temperature = simulate_temperature(current_hour)
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+            # Record the first flow rate when motor is on
+            if motor.get_motor_status() == "on" and first_flow_rate is None and pipe_id == "input":
+                first_flow_rate = reservoirs["input"].generate_input_pipe_rate(motor)
+
+            # If we have the first flow rate, calculate the time to fill the tank
+            if first_flow_rate and time_to_fill is None:
+                time_to_fill = reservoirs["input"].capacity / first_flow_rate  # time = volume / flow rate
+
+            # Add current pressure to the list of previous readings
+            previous_pressure = pressure_readings[pipe_id][-1] if pressure_readings[pipe_id] else pressure
+
+            # Check for leaks only if the leak hasn't been detected yet
+            if not leak_detected[pipe_id]:
+                if detect_leak(previous_pressure, pressure):
+                    leak_detected[pipe_id] = True
+                    leak_time[pipe_id] = timestamp
+                    leak_duration[pipe_id] = 0  # Reset leak duration when first detected
+
+            # If leak is detected, increment leak duration
+            if leak_detected[pipe_id]:
+                leak_duration[pipe_id] += 1
+                if leak_duration[pipe_id] >= TIME_TO_DETECT_LEAK:
+                    logging.warning(f"Leak detected at {leak_time[pipe_id]} in Pipe {pipe_id} due to sustained pressure drop!")
+
+            # Only perform updates when the motor status is "on"
+            if motor.get_motor_status() == "on":
+                # Generate inflow for the reservoir (no outflow calculations for output pipes)
+                if pipe_id == "input":
+                    input_pipe_inflow = reservoirs[pipe_id].generate_input_pipe_rate(motor)
+                    reservoirs[pipe_id].update_reservoir_level(input_pipe_inflow, is_input_pipe=True)
+                else:
+                    input_pipe_inflow = reservoirs[pipe_id].generate_input_pipe_rate(motor)
+                    reservoirs[pipe_id].update_reservoir_level(input_pipe_inflow, is_input_pipe=False)
+
+                # Prepare the sensor data entry and log the details
+                logging.info(f"Preparing sensor data entry for Pipe {pipe_id}: Water Flow: {water_flow:.2f}, Pressure: {pressure / 1e5:.2f}, Temperature: {temperature:.2f}")
+
+                data_entry = {
+                    'timestamp': timestamp,
+                    'water_flow': round(water_flow, 2),
+                    'pressure': round(pressure / 1e5, 2),  # Convert pressure to bar
+                    'temperature': round(temperature, 2),
+                    'leak_detected': leak_detected[pipe_id],
+                }
+
+                # Add the new entry to the sensor data list for the respective pipe
+                if pipe_id not in sensor_data['pipes']:
+                    sensor_data['pipes'][pipe_id] = []
+                sensor_data['pipes'][pipe_id].append(data_entry)
+
+                # Trim the data to keep only the latest 24 hours of entries
+                sensor_data = trim_old_data(sensor_data)
+
+                # Save the updated data to the file
+                if time_to_fill:
+                    sensor_data['time_to_fill'] = round(time_to_fill, 2)  # Save time to fill in hours
+                save_sensor_data(sensor_data)
+
+                # Display the data
+                logging.info(f"Pipe {pipe_id} - Timestamp: {timestamp}")
+                logging.info(f"Water Flow: {water_flow:.2f} L/min")
+                logging.info(f"Pressure: {pressure / 1e5:.2f} bar")
+                logging.info(f"Temperature: {temperature:.2f} °C")
+
+                if leak_detected[pipe_id]:
+                    logging.warning(f"Leak detected at {leak_time[pipe_id]}!")
+
+            # Add the new pressure reading
+            pressure_readings[pipe_id].append(pressure)
+
+            # Keep only the last 5 readings for memory efficiency
+            if len(pressure_readings[pipe_id]) > 5:
+                pressure_readings[pipe_id].pop(0)
+
+        # Wait for 3 seconds (for testing purposes, can be increased for real scenario)
+        time.sleep(2)
+
+    # Print the time required to fill the tank once calculated
+    if time_to_fill:
+        logging.info(f"Time required to fill the tank using the first flow rate: {time_to_fill:.2f} hours.")
+
+# Start generating data
+generate_sensor_data_with_logging()
